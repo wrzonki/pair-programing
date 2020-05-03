@@ -1,29 +1,18 @@
-const express = require('express')
-const puppeteer = require('puppeteer');
-const app = express()
-const port = 3000
+const express = require('express');
+const crawl = require('./crawl');
+const app = express();
+const port = 3000;
 
-var getData = async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto('http://pawel-wrzosek.pl');
-    const launch = await page.evaluate(() => {
-        var result = [];
-        var allHrefs = document.querySelectorAll('a[href]')
-        allHrefs.forEach(el => {
-            result.push({
-                href: el.href,
-                txt: el.textContent.trim()
-            })
-        })
-        return `<div>${JSON.stringify(result, null, 2)}</div>`
+app.set('view engine', 'pug');
+
+app.get('/', function (req, res) {
+    crawl.getData('http://pawel-wrzosek.pl').then((data) => {
+        res.render('index', {
+            title: 'Tytuł ',
+            message: 'Siema',
+            crawler: data,
+        });
     });
-    await browser.close();
-    return launch
-  };
+});
 
-  app.get('/', function (req, res) {
-    res.send(`response = ${getData()}`)
-  })
-
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
