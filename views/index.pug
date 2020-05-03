@@ -2,6 +2,10 @@ html
     head
         title!=title
         body
+            form(action="/result" method="POST")
+                label(for="page") Page
+                input(type="text" name="page" placeholder="Podaj pełną ścieżkę strony internetowej")
+                button(type="submit") Wyślij
             h1=message
             pre
                 code=crawler
